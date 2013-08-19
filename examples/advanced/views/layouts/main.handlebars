@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css">
+    <link rel="stylesheet" type="text/css" href="https://rawgithub.com/novus/nvd3/master/src/nv.d3.css">
+
+
+    <style>
+        body {
+            line-height: 1.6em;
+        }
+        #main {
+            width: 80%;
+            margin: 0 auto;
+        }
+        #chart {
+            margin-top: 2em;
+            height: 500px;
+        }
+
+        #toc {
+            list-style: none;
+            padding-left: 0;
+        }
+        #toc a {
+            display: block;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #toc p {
+            margin-top: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <script>
+    {{{app}}}
+    {{{state}}}
+    </script>
+
+    <div id="wrap">
+        <div id="main">
+            {{{body}}}
+        </div>
+    </div>
+</body>
+</html>
