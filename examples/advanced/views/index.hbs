@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.2.1/pure-min.css">
+    <title>Express-state Advanced Example</title>
+
+    <style>
+        .photo {
+            text-align: center;
+            margin: 1em 0;
+        }
+        .photo-link {
+            text-decoration: none;
+            font-size: 80%;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Express-state Advanced Example</h1>
+
+    <div id="photoList" class="pure-g"></div>
+    <script>
+        {{{state}}}
+    </script>
+
+    <script src="http://yui.yahooapis.com/3.11.0/build/yui/yui-min.js"></script>
+
+    <script>
+        YUI({
+            modules: {
+                'photoView': 'PhotoView.js'
+            }
+        }).use('model', 'view', 'photoView', function (Y) {
+
+            //Pull out the `photos` array exposed by the server.
+            var photos = Example.Photos,
+                i,
+                photoView,
+                photoViewList = [];
+
+            //Create a Y.Model instance for each photo, and render
+            //it on the page by wrapping it in a Y.PhotoView instance
+            for (i = 0; i < photos.length; i++) {
+                photoView = new Y.PhotoView({
+                    model: new Y.Model(photos[i])
+                });
+                photoViewList.push(photoView);
+                photoView.render();
+            }
+
+        });
+    </script>
+</body>
+</html>
