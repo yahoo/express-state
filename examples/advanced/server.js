@@ -39,7 +39,7 @@ app.expose([], 'Photos');
 app.expose(config, 'Config');
 
 app.get('/', function (req, res, next) {
-    new YQL.exec('select * from flickr.photos.interestingness(24) where api_key=@apiKey', function (response) {
+    new YQL.exec('select * from flickr.photos.interestingness(96) where api_key=@apiKey', function (response) {
         //get an array of photos from the results
         var photos = response.query.results.photo;
 
@@ -48,7 +48,7 @@ app.get('/', function (req, res, next) {
 
             //The src for the photo
             item.src = 'http://farm' + item.farm + '.staticflickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_q.jpg';
-
+            item.large = 'http://farm' + item.farm + '.staticflickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_c.jpg';
             //the url of the photo on Flickr
             item.url = 'http://www.flickr.com/photos/' + item.owner + '/' + item.id;
         });
@@ -58,7 +58,9 @@ app.get('/', function (req, res, next) {
         res.expose(photos, 'Photos');
 
         //render the index.hbs page
-        res.render('index');
+        res.render('index', {
+            photos: photos
+        });
     }, {
         "apiKey": config.flickrApiKey
     });
