@@ -6,21 +6,52 @@
     <title>Express-state Advanced Example</title>
 
     <style>
-        .photo {
-            text-align: center;
-            margin: 1em 0;
+        body {
+            position: relative;
         }
-        .photo-link {
-            text-decoration: none;
+
+        h1 {
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: 100;
+            color: #666;
+        }
+        .hidden {
+            display: none;
+        }
+
+        .lightbox {
+            position:fixed; /* keeps the lightbox window in the current viewport */
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background: rgba(0,0,0,0.5);
+            text-align:center;
+        }
+
+        .lightbox-image {
+            box-shadow:0 0 25px #111;
+            max-width: 80%;
+        }
+        .lightbox-link {
+            margin: 1em;
+            border: 1px solid #111;
+            text-transform: uppercase;
             font-size: 80%;
-            padding-top: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Express-state Advanced Example</h1>
 
-    <div id="photoList" class="pure-g"></div>
+    <div id="photoList" class="pure-g">
+        {{#each photos}}
+            <div class="photo pure-u-1-12" data-photoId="{{id}}">
+                <img class="pure-u-1" src="{{src}}">
+            </div>
+        {{/each}}
+    </div>
     <script>
         {{{state}}}
     </script>
@@ -30,26 +61,35 @@
     <script>
         YUI({
             modules: {
-                'photoView': 'PhotoView.js'
+                'lightboxView': 'LightboxView.js'
             }
-        }).use('model', 'view', 'photoView', function (Y) {
+        }).use('model-list', 'view', 'lightboxView', function (Y) {
 
             //Pull out the `photos` array exposed by the server.
             var photos = Example.Photos,
-                i,
-                photoView,
-                photoViewList = [];
+                //A Y.ModelList containing all the photo data
+                photoList = new Y.ModelList({ items: photos }),
+                photosNode = Y.one('#photoList'),
+                lightBoxView;
 
-            //Create a Y.Model instance for each photo, and render
-            //it on the page by wrapping it in a Y.PhotoView instance
-            for (i = 0; i < photos.length; i++) {
-                photoView = new Y.PhotoView({
-                    model: new Y.Model(photos[i])
-                });
-                photoViewList.push(photoView);
-                photoView.render();
-            }
+            //Set up a listener on the #photoList DOM element, that listens for clicks
+            //on photos.
+            photosNode.delegate('click', function (e) {
 
+                //When a photo is clicked on, get it's `data-photoId` attribute and use this
+                //to find the corresponding Y.Model from the Y.ModelList.
+                var photo = photoList.getById(e.currentTarget.getAttribute('data-photoId'));
+
+                //Create a Y.LightBoxView instance if it does not exist and render it.
+                //Pass in the Y.Model into the lightbox to render it.
+                if (lightBoxView instanceof Y.View) {
+                    lightBoxView.set('model', photo);
+                }
+                else {
+                    lightBoxView = new Y.LightboxView({ model: photo });
+                }
+                lightBoxView.render();
+            }, '.photo');
         });
     </script>
 </body>
