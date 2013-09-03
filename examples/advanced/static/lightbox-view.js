@@ -42,7 +42,7 @@ YUI.add('lightbox-view', function(Y, name) {
         ATTRS: {
             container: {
               valueFn: function () {
-                return Y.Node.create('<div class="lightbox pure-u"/>');
+                return Y.Node.create('<div class="lightbox"/>');
               }
             }
         }
