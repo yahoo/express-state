@@ -3,6 +3,7 @@
   "description": "Share server-side state with the client-side of an Express app via JavaScript.",
   "version": "0.0.1",
   "homepage": "https://github.com/yahoo/express-state",
+  "private": true,
   "author": {
     "name": "Tilo Mitra",
     "email": "tilomitra@gmail.com",
@@ -11,6 +12,6 @@
   "dependencies": {
     "express": "3.x",
     "express3-handlebars": "*",
-    "yql": "~0.4.8"
+    "request": "~2.27.0"
   }
 }
