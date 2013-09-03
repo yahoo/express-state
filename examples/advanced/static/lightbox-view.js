@@ -1,27 +1,16 @@
-YUI.add('lightboxView', function(Y, name) {
-    var LightboxView = Y.Base.create("lightboxView", Y.View, [], {
+YUI.add('lightbox-view', function(Y, name) {
+    var LightboxView = Y.Base.create("lightbox-view", Y.View, [], {
 
         events: {
-            '.lightbox-hide': {
+            '.lightbox-hide, .lightbox': {
                 click: "hide"
             }
         },
 
-        template:
-            '<img class="pure-u-1 lightbox-image" src="{large}"> '+
-            '<div class="lightbox-meta">' +
-                '<a class="pure-button lightbox-link" href="{url}">View on Flickr</a>' +
-                '<button class="pure-button lightbox-link lightbox-hide">Hide</button>' +
-            '</div>',
+        template: Y.one('#lightbox-template').getHTML(),
 
         initializer: function (config) {
-            var model = this.get('model'),
-                container = this.get('container');
-                // We'll also re-render the view whenever the data of one of the models in
-                // the list changes.
-                //model.after('*:change', this.render, this);
-                container.on('click', this.hide, this);
-
+            this.after('photoChange', this.render, this);
         },
 
         show: function () {
@@ -34,10 +23,11 @@ YUI.add('lightboxView', function(Y, name) {
 
         render: function () {
             var container = this.get('container'),
-                html      = Y.Lang.sub(this.template, this.get('model').toJSON());
+                compiled  = Y.Handlebars.compile(this.template),
+                html      = compiled(this.get('photo').toJSON());
 
             // Render this view's HTML into the container element.
-            container.setHTML(html);
+            container.empty().append(html);
 
             // Append the container element to the DOM if it's not on the page already.
             if (!container.inDoc()) {
@@ -62,5 +52,5 @@ YUI.add('lightboxView', function(Y, name) {
     Y.LightboxView = LightboxView;
 
 }, '0.0.1', {
-    requires: ['node', 'view', 'event-outside']
+    requires: ['node', 'view', 'handlebars']
 });
