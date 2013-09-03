@@ -47,30 +47,39 @@
 
     <div id="photoList" class="pure-g">
         {{#each photos}}
-            <div class="photo pure-u-1-12" data-photoId="{{id}}">
+            <div class="photo pure-u-1-12" data-photo-id="{{id}}">
                 <img class="pure-u-1" src="{{src}}">
             </div>
         {{/each}}
     </div>
+
+    <script type="text/x-handlebars" id="lightbox-template">
+        <img class="pure-u-1 lightbox-image" src="\{{large}}">
+        <div class="lightbox-meta">
+            <a class="pure-button lightbox-link" href="\{{url}}">View on Flickr</a>
+            <button class="pure-button lightbox-link lightbox-hide">Hide</button>
+        </div>
+    </script>
+
+
     <script>
         {{{state}}}
     </script>
 
     <script src="http://yui.yahooapis.com/3.11.0/build/yui/yui-min.js"></script>
-
     <script>
         YUI({
             modules: {
-                'lightboxView': 'LightboxView.js'
+                'lightbox-view': 'lightbox-view.js'
             }
-        }).use('model-list', 'view', 'lightboxView', function (Y) {
+        }).use('model-list', 'lightbox-view', function (Y) {
 
             //Pull out the `photos` array exposed by the server.
             var photos = Example.Photos,
                 //A Y.ModelList containing all the photo data
                 photoList = new Y.ModelList({ items: photos }),
                 photosNode = Y.one('#photoList'),
-                lightBoxView;
+                lightBox;
 
             //Set up a listener on the #photoList DOM element, that listens for clicks
             //on photos.
@@ -78,17 +87,14 @@
 
                 //When a photo is clicked on, get it's `data-photoId` attribute and use this
                 //to find the corresponding Y.Model from the Y.ModelList.
-                var photo = photoList.getById(e.currentTarget.getAttribute('data-photoId'));
+                var photo = photoList.getById(e.currentTarget.getAttribute('data-photo-id'));
 
                 //Create a Y.LightBoxView instance if it does not exist and render it.
                 //Pass in the Y.Model into the lightbox to render it.
-                if (lightBoxView instanceof Y.View) {
-                    lightBoxView.set('model', photo);
+                if (!lightBox) {
+                    lightBox = new Y.LightboxView({ photo: photo });
                 }
-                else {
-                    lightBoxView = new Y.LightboxView({ model: photo });
-                }
-                lightBoxView.render();
+                lightBox.set('photo', photo);
             }, '.photo');
         });
     </script>
