@@ -40,6 +40,9 @@
   "peerDependencies": {
     "express": "3.x"
   },
+  "dependencies": {
+    "JSON2": "0.1.0"
+  },
   "devDependencies": {
     "chai": "*",
     "express": "3.x",
