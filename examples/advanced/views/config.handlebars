@@ -1,0 +1,43 @@
+<h1>Sharing Config objects between server and client</h1>
+<p>
+    This example uses <code>express-state</code> to expose a configuration object under <code>Example.Config</code>. The object contains our Flickr API key which we use to get images from Flickr.
+</p>
+
+<h2>Recent Flickr Photos</h2>
+
+<div id="photos"></div>
+
+<script src="http://yui.yahooapis.com/3.11.0/build/yui/yui-min.js"></script>
+
+<script>
+    YUI().use('node-base', 'jsonp', function (Y) {
+        //Get the flickrApiKey object that's exposed by `express-state`
+        var flickrApi = Example.Config.flickrApiKey,
+            route = 'http://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=' + flickrApi + '&format=json&jsoncallback={callback}',
+            photoSrcTemplate = "http://farm{farmId}.staticflickr.com/{serverId}/{id}_{secret}_q.jpg";
+            photosNode = Y.one('#photos'),
+
+            //This function is called when the Flickr API comes back with photos
+            displayPhotos = function (data) {
+                for (var i = 0; i < 5; i++) {
+                    var photo = data.photos.photo[i],
+                        //take the photoSrcTemplate below and fill in the placeholders with strings from the photo
+                        imgSrc = Y.Lang.sub(photoSrcTemplate, {
+                            farmId: photo.farm,
+                            serverId: photo.server,
+                            id: photo.id,
+                            secret: photo.secret
+                        }),
+
+                        //Normally, we would not want to append an image to the DOM one-by-one. But let's keep things simple.
+                        img = Y.Node.create('<img src="' + imgSrc + '">');
+
+                    photosNode.appendChild(img);
+                }
+            },
+
+
+            Y.jsonp(route, displayPhotos);
+
+    });
+</script>

@@ -1,0 +1,39 @@
+<h1>Exposing data to generate a chart</h1>
+<p>
+    This example uses <code>express-state</code> to expose some chart data from the server to the client under <code>window.Example.Data</code>. This data is picked up by <code>d3.js</code> and used to generate a chart.
+</p>
+
+<small>
+    The chart example + chart data is from <a href="http://nvd3.org/">nvd3.org</a>
+</small>
+
+<div id="chart">
+    <svg></svg>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.0.0-beta/nv.d3.min.js"></script>
+<script>
+    //The code below was from http://nvd3.org/livecode/#codemirrorNav
+    nv.addGraph(function() {
+      var chart = nv.models.stackedAreaChart()
+                    .x(function(d) { return d[0] })
+                    .y(function(d) { return d[1] })
+                    .clipEdge(true);
+
+      chart.xAxis
+          .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
+
+      chart.yAxis
+          .tickFormat(d3.format(',.2f'));
+
+      d3.select('#chart svg')
+        //Use the exposed Example.Data
+        .datum(Example.Data)
+          .transition().duration(500).call(chart);
+
+      nv.utils.windowResize(chart.update);
+
+      return chart;
+    });
+</script>
